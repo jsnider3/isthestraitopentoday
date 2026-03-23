@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is The Strait Open Today?</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: #ff1a1a;
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Apocalyptic red/orange gradient sky */
+  .bg-sky {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 120%, #1a0000 0%, transparent 70%),
+      radial-gradient(ellipse at 20% 50%, rgba(180, 30, 0, 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 30%, rgba(200, 60, 0, 0.3) 0%, transparent 50%),
+      linear-gradient(to bottom, #0a0000 0%, #1a0500 30%, #2a0a00 60%, #0a0000 100%);
+    z-index: 0;
+  }
+
+  /* Animated falling stock tickers */
+  .ticker-rain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0.25;
+  }
+
+  .ticker {
+    position: absolute;
+    color: #ff0000;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    animation: fall linear infinite;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(-100px); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  /* Crashing chart lines */
+  .chart-container {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.15;
+  }
+
+  .chart-container svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-line {
+    fill: none;
+    stroke: #ff2200;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgba(255, 0, 0, 0.8));
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: drawCrash 4s ease-in forwards infinite;
+  }
+
+  .chart-line:nth-child(2) { stroke: #ff4400; animation-delay: 1s; opacity: 0.7; }
+  .chart-line:nth-child(3) { stroke: #ff6600; animation-delay: 2s; opacity: 0.5; }
+
+  @keyframes drawCrash {
+    0% { stroke-dashoffset: 2000; }
+    100% { stroke-dashoffset: 0; }
+  }
+
+  /* Smoke / fire particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .ember {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ff4400;
+    border-radius: 50%;
+    animation: rise linear infinite;
+    box-shadow: 0 0 6px 2px rgba(255, 68, 0, 0.6);
+  }
+
+  @keyframes rise {
+    0% { transform: translateY(100vh) translateX(0) scale(1); opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-10vh) translateX(var(--drift)) scale(0); opacity: 0; }
+  }
+
+  /* Screen flicker */
+  .flicker {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    animation: screenFlicker 0.15s infinite;
+    background: transparent;
+  }
+
+  @keyframes screenFlicker {
+    0% { background: transparent; }
+    49% { background: transparent; }
+    50% { background: rgba(255, 0, 0, 0.02); }
+    100% { background: transparent; }
+  }
+
+  /* Main content */
+  .content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+  }
+
+  .question {
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: #aa3333;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(170, 50, 50, 0.5);
+  }
+
+  .answer {
+    font-size: clamp(8rem, 30vw, 28rem);
+    font-weight: 900;
+    color: #ff0000;
+    text-shadow:
+      0 0 40px rgba(255, 0, 0, 0.8),
+      0 0 80px rgba(255, 0, 0, 0.6),
+      0 0 120px rgba(255, 0, 0, 0.4),
+      0 0 200px rgba(255, 0, 0, 0.2);
+    animation: pulse 2s ease-in-out infinite, shake 0.5s ease-in-out infinite;
+    line-height: 0.85;
+    user-select: none;
+  }
+
+  @keyframes pulse {
+    0%, 100% { text-shadow: 0 0 40px rgba(255,0,0,0.8), 0 0 80px rgba(255,0,0,0.6), 0 0 120px rgba(255,0,0,0.4); }
+    50% { text-shadow: 0 0 60px rgba(255,0,0,1), 0 0 120px rgba(255,0,0,0.8), 0 0 200px rgba(255,0,0,0.6), 0 0 300px rgba(255,0,0,0.3); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  .subtitle {
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    color: #661111;
+    letter-spacing: 0.5em;
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+  }
+
+  /* Down arrows scattered */
+  .down-arrows {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .arrow {
+    position: absolute;
+    color: #ff0000;
+    font-size: 24px;
+    animation: arrowFall linear infinite;
+    opacity: 0.3;
+  }
+
+  @keyframes arrowFall {
+    0% { transform: translateY(-50px); opacity: 0; }
+    10% { opacity: 0.3; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  /* Scanlines */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 2px,
+      rgba(0, 0, 0, 0.15) 4px
+    );
+  }
+
+  /* Vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 7;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-sky"></div>
+
+<div class="chart-container">
+  <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+    <polyline class="chart-line" points="0,200 100,180 200,190 300,150 400,160 450,140 500,200 550,250 600,350 650,400 700,480 800,520 900,560 1000,590" />
+    <polyline class="chart-line" points="0,250 100,240 200,220 300,230 400,200 500,260 550,300 600,380 700,450 800,500 900,550 1000,580" />
+    <polyline class="chart-line" points="0,300 150,280 250,290 350,260 450,270 500,310 600,400 700,470 800,530 1000,590" />
+  </svg>
+</div>
+
+<div class="ticker-rain" id="tickerRain"></div>
+<div class="particles" id="particles"></div>
+<div class="down-arrows" id="arrows"></div>
+<div class="flicker"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<div class="content">
+  <div class="question">Is the Strait open today?</div>
+  <div class="answer">NO</div>
+  <div class="subtitle">&#9760; Markets in freefall &#9760;</div>
+</div>
+
+<script>
+  // Falling stock tickers
+  const tickers = [
+    'SPY -14.2%', 'QQQ -18.7%', 'DIA -12.3%', 'AAPL -22.1%',
+    'MSFT -19.8%', 'GOOGL -24.5%', 'AMZN -21.3%', 'NVDA -31.2%',
+    'TSLA -38.7%', 'META -26.4%', 'BRK.B -15.1%', 'JPM -18.9%',
+    'V -16.7%', 'UNH -20.3%', 'XOM -25.8%', 'WMT -11.2%',
+    'DOW -2,847', 'S&P -892', 'NASDAQ -3,241', 'VIX +340%',
+    'CIRCUIT BREAKER', 'HALTED', 'LIMIT DOWN', 'SELL SELL SELL',
+    'BTC -45.2%', 'ETH -52.1%', 'CRUDE -33.8%', 'GOLD +12.4%',
+    'YIELD CURVE INVERTED', '10Y YIELD 6.8%', 'FED EMERGENCY MTG',
+    'MARGIN CALL', 'LIQUIDATION', 'BANKRUPTCY', 'DEFAULT',
+  ];
+
+  const rainEl = document.getElementById('tickerRain');
+  function spawnTicker() {
+    const el = document.createElement('div');
+    el.className = 'ticker';
+    el.textContent = '▼ ' + tickers[Math.floor(Math.random() * tickers.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = (4 + Math.random() * 6) + 's';
+    el.style.animationDelay = '0s';
+    el.style.fontSize = (10 + Math.random() * 8) + 'px';
+    rainEl.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+  setInterval(spawnTicker, 200);
+
+  // Embers / fire particles
+  const particlesEl = document.getElementById('particles');
+  function spawnEmber() {
+    const el = document.createElement('div');
+    el.className = 'ember';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+    el.style.animationDuration = (3 + Math.random() * 5) + 's';
+    el.style.width = el.style.height = (2 + Math.random() * 4) + 'px';
+    const hue = Math.random() > 0.5 ? '#ff4400' : '#ff6600';
+    el.style.background = hue;
+    particlesEl.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+  setInterval(spawnEmber, 100);
+
+  // Down arrows
+  const arrowsEl = document.getElementById('arrows');
+  function spawnArrow() {
+    const el = document.createElement('div');
+    el.className = 'arrow';
+    el.textContent = '▼';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = (3 + Math.random() * 4) + 's';
+    el.style.fontSize = (16 + Math.random() * 24) + 'px';
+    arrowsEl.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+  setInterval(spawnArrow, 300);
+</script>
+
+</body>
+</html>
